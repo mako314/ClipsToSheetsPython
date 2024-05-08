@@ -5,11 +5,20 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import webbrowser    
+
+urL='https://www.google.com'
+chrome_path="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+webbrowser.register('chrome', None,webbrowser.BackgroundBrowser(chrome_path))
+webbrowser.get('chrome').open_new_tab(urL)
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # The ID and range of a sample spreadsheet.
+# Current Spread Sheet ID 
+# Testing Twitch Clips
+# 1jy-WrBstbUP_BJ8-5l41mIYBgZr-SGmJeGTkZdZJ-QE
 SAMPLE_SPREADSHEET_ID = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
 SAMPLE_RANGE_NAME = "Class Data!A2:E"
 
