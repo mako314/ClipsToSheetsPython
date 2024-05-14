@@ -7,17 +7,20 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-
-import asyncio
+import os
+import sys
+import webbrowser    
+from google.oauth2 import service_account
 import json
-import websockets
 
-
+#####################
+######
+#Global Variables 
+#######
+#######
 # https://developers.google.com/sheets/api/quickstart/python
 # https://developers.google.com/sheets/api/guides/values#python_3
 # https://stackoverflow.com/questions/48056052/webbrowser-get-could-not-locate-runnable-browser
-import webbrowser    
-
 urL='https://www.google.com'
 chrome_path="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
 webbrowser.register('chrome', None,webbrowser.BackgroundBrowser(chrome_path))
@@ -32,7 +35,32 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 # 1jy-WrBstbUP_BJ8-5l41mIYBgZr-SGmJeGTkZdZJ-QE
 TWITCH_SPREADSHEET_ID = "1jy-WrBstbUP_BJ8-5l41mIYBgZr-SGmJeGTkZdZJ-QE"
 TWITCH_RANGE_NAME = "A2:C16"
+#######
+#######
+##############
+#######
+##############
+#######
+#######
 
+
+
+
+def justRan():
+   pass
+# Function to create a JSON file
+# https://www.geeksforgeeks.org/json-dump-in-python/
+# https://stackoverflow.com/questions/64196315/json-dump-into-specific-folder
+def create_json(data, filename):
+    with open(filename, 'w') as f:
+        json.dump(data, f)
+
+# Function to read a JSON file
+def read_json(filename):
+    with open(filename, 'r') as f:
+        return json.load(f)
+
+# Function to authenticate with Google
 
 def append_my_clip(
       spreadsheet_id, range_name, value_input_option, insertDataOption, _values
@@ -111,39 +139,88 @@ def append_my_clip(
       print(f"{(result.get('updates').get('updatedCells'))} cells appended.")
       print("API Response:", result)
       return result
-  except HttpError as error:
+  except Exception as error:
       print(f"An error occurred: {error}")
       return error
-   
+  
 
-# https://wiki.streamer.bot/en/Servers-Clients/WebSocket-Server
-# https://websockets.readthedocs.io/en/stable/
+# https://stackoverflow.com/questions/21082037/when-making-a-very-simple-multiple-choice-story-in-python-can-i-call-a-line-to --- reminded me to do loop
+# https://www.w3schools.com/python/python_operators.asp
+# https://www.freecodecamp.org/news/python-do-while-loop-example/
+# Holy cow haha this reminded me of isinstance() 
+# https://stackoverflow.com/questions/2225038/determine-the-type-of-an-object
+if __name__ == '__main__':
+    exit = False
+    intro = True
+    while exit == False:
+        if intro == True:
+            print( """
+                                |               ___       #   ___      
+                    )))         |.===.         /\#/\      #  <_*_>     
+                    (o o)        {}o o{}       /(o o)\     #  (o o)     
+                ooO--(_)--Ooo-ooO--(_)--Ooo-ooO--(_)--Ooo--8---(_)--Ooo-
+                        
+                ▄▀▀▄ ▄▀▄  ▄▀▀█▄   ▄▀▀▄ █  ▄▀▀▀▀▄  
+                █  █ ▀  █ ▐ ▄▀ ▀▄ █  █ ▄▀ █      █ 
+                ▐  █    █   █▄▄▄█ ▐  █▀▄  █      █ 
+                █    █   ▄▀   █   █   █ ▀▄    ▄▀ ▄
+                ▄▀   ▄▀   █   ▄▀  ▄▀   █    ▀▀▀▀   
+                █    █    ▐   ▐   █    ▐           
+                ▐    ▐            ▐                
+                                |               ___       #   ___      
+                    )))         |.===.         /\#/\      #  <_*_>     
+                    (o o)        {}o o{}       /(o o)\     #  (o o)     
+                ooO--(_)--Ooo-ooO--(_)--Ooo-ooO--(_)--Ooo--8---(_)--Ooo-
+        """)
+            
+        first_run = input("""
+        Hey qt3.14, first time running me?
+        [1] : Yes 
+        [2] : Mako please stop making me view this window
+        [3] : Exit 😎
+                        """)
+        if first_run:
+            intro = False
+
+            if first_run == '1':
+                print('Basic CLI incorported?')
 
 
-async def twitchUploader(websocket):
-    print("===================SERVER STARTED================.")
-    name = await websocket.recv()
-    print(f"<<< {name}")
-
-    greeting = f"Hello {name}!"
-
-    await websocket.send(greeting)
-    print(f">>> {greeting}")
-
-async def main():
-    async with websockets.serve(twitchUploader, "localhost", 8765):
-        await asyncio.Future()  # run forever
-
-if __name__ == "__main__":
-    asyncio.run(main())
 
 
-# if __name__ == "__main__":
-#   # Pass: spreadsheet_id, range_name value_input_option and _values)
-#   append_my_clip(
-#       TWITCH_SPREADSHEET_ID,
-#       TWITCH_RANGE_NAME,
-#       "USER_ENTERED",
-#       "INSERT_ROWS",
-#       [["F", "B"], ["C", "D"]],
-#   )
+        # Can use this data to send whatever is needed. Will need to look in Streamer.bot
+        data = {"example": "data"}
+        create_json(data, 'output.json')
+        print("Created JSON file")
+
+        read_data = read_json('output.json')
+        print("Read JSON data:", read_data)
+
+        # creds = google_authenticate()
+        print("Authenticated with Google")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # Function to get the path to the credentials file
+# def get_credentials_path(filename):
+#     # Check if the script is running as a bundled executable
+#     if getattr(sys, 'frozen', False):
+#         # If running as a bundle, the PyInstaller bootloader sets sys._MEIPASS
+#         base_path = sys._MEIPASS
+#     else:
+#         # If running in a normal Python environment
+#         base_path = os.path.dirname(os.path.abspath(__file__))
+
+#     return os.path.join(base_path, filename)
