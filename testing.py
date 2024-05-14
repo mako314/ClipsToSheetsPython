@@ -152,6 +152,7 @@ def append_my_clip(
 if __name__ == '__main__':
     exit = False
     intro = True
+    
     while exit == False:
         if intro == True:
             print( """
@@ -184,13 +185,24 @@ if __name__ == '__main__':
 
             if first_run == '1':
                 print('Basic CLI incorported?')
-
+                # data = {"example": "data"}
+                
+            if first_run == '2':
+                account_authed = input("""
+        Sweet, what do you want to do?
+        [1] : Run ! 🤖 
+        [2] : Exit 😎
+                        """)
+                    
+                if account_authed == '2':
+                    quit()
+            if first_run == '3':
+               quit()
 
 
 
         # Can use this data to send whatever is needed. Will need to look in Streamer.bot
-        data = {"example": "data"}
-        create_json(data, 'output.json')
+
         print("Created JSON file")
 
         read_data = read_json('output.json')
