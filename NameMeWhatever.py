@@ -82,7 +82,7 @@ def append_my_clip(
     """
     # creds, _ = google.auth.default()
     # pylint: disable=maybe-no-member
-    print("Building the Google Sheets service...")
+    # print("Building the Google Sheets service...")
   try:
       print("Building the Google Sheets service...")
       service = build("sheets", "v4", credentials=creds)
