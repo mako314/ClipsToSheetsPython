@@ -12,35 +12,43 @@ import webbrowser
 from google.oauth2 import service_account
 import asyncio
 import websockets
+import json
 
 
-
-# https://developers.google.com/sheets/api/quickstart/python
-# https://developers.google.com/sheets/api/guides/values#python_3
-# https://stackoverflow.com/questions/48056052/webbrowser-get-could-not-locate-runnable-browser
-# https://stackoverflow.com/questions/75454425/access-blocked-project-has-not-completed-the-google-verification-process 
-
-chrome_path = None
-creds = None
-
-
-# If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-
+# chrome_path = None 
 # The ID and range of a sample spreadsheet.
 # Current Spread Sheet ID 
 # 1jy-WrBstbUP_BJ8-5l41mIYBgZr-SGmJeGTkZdZJ-QE
 # Testing Twitch Clips
 # twitch_spreadsheet_id = "1jy-WrBstbUP_BJ8-5l41mIYBgZr-SGmJeGTkZdZJ-QE"
 # twitch_range_name = "A2:C16"
+# https://developers.google.com/sheets/api/quickstart/python
+# https://developers.google.com/sheets/api/guides/values#python_3
+# https://stackoverflow.com/questions/48056052/webbrowser-get-could-not-locate-runnable-browser
+# https://stackoverflow.com/questions/75454425/access-blocked-project-has-not-completed-the-google-verification-process 
+
+
+# Global Variables
+# If modifying these scopes, delete the file token.json.
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+
+# Used to hold your credentials for Google Auth
+creds = None
+
+# Holds the spreadsheet id that can be found in the URL for the spreadsheet you'd like to use.
 twitch_spreadsheet_id = None
+
+# Holds the range name that can be found in the spreadsheet you'd like to use.
 twitch_range_name = None
+
+# ( This can be bypassed btw )
+# Identifies whether this user is:
+# 1: First time user meaning their credentials have NOT been set.
+# 2: Whether or not a user finished setting their credentials in the app. 
 sheet_creds_set = False
-# ready_to_run = False
 
-def start_app():
-    pass
 
+# This funciton simply handles setting the users variables. We need a range name and a spreadsheet id to do anything.
 def set_global_vars():
     global twitch_spreadsheet_id, twitch_range_name, sheet_creds_set
     # https://www.w3schools.com/python/ref_func_all.asp
@@ -48,49 +56,62 @@ def set_global_vars():
         'spread_id' : False,
         'range_name' : False,
     }
+    data_to_send = {
+    "twitch_spreadsheet_id": "",
+    "twitch_range_name" : ""
+    }
     # https://stackoverflow.com/questions/35253971/how-to-check-if-all-values-of-a-dictionary-are-0
     # all(value == 0 for value in your_dict.values())
     while all(value == True for value in details_set.values()) == False:
         set_personal_vars = input(f"""
-        Alright, lets set these variables. If at any moment you are not sure, please, please read the documentation again! Remember, this applications goal is to WRITE to your google sheet, so it needs that permission!  
+        \nAlright, lets set these variables. If at any moment you are not sure, please, please read the documentation again! Remember, this applications goal is to WRITE to your google sheet, so it needs that permission! \n 
         [1] : {"SET my Spreadsheet ID." if twitch_spreadsheet_id == None else f"SPREAD ID = {twitch_spreadsheet_id}. CHANGE?" } 
         [2] : {"SET my SPREADSHEET RANGE." if twitch_range_name == None else f"RANGE = {twitch_range_name}. CHANGE?"} 
         [3] : Return 😎
         [4] : Exit 😎
+        \n
         """)
 
         if set_personal_vars == '1':
-            twitch_spreadsheet_id = input(f"Current SPREADSHEET_ID: {twitch_spreadsheet_id}. Please refer to docs if you're not sure what this is. \n")
+            twitch_spreadsheet_id = input(f"Current SPREADSHEET_ID: {twitch_spreadsheet_id}. Please refer to docs if you're not sure what this is. \n \n")
             details_set['spread_id'] = True
             # print(f"The details_set spread id is now {details_set['spread_id'] }")
+            data_to_send['twitch_spreadsheet_id'] = twitch_spreadsheet_id
         
         if set_personal_vars == '2':
-            twitch_range_name = input(f"Current RANGE_NAME:{twitch_range_name}. Please refer to docs if you're not sure what this is. \n")
+            twitch_range_name = input(f"Current RANGE_NAME:{twitch_range_name}. Please refer to docs if you're not sure what this is. \n \n")
             details_set['range_name'] = True
             # print(f"The details_set range_name is now {details_set['range_name'] }")
+            data_to_send['twitch_range_name'] = twitch_range_name
 
         if set_personal_vars == '3':
             start_app()
         
         if set_personal_vars == '4':
             quit()
+    
+    print("Creating your personal google JSON...")
+    print("The Data to dump:", data_to_send)
+    create_json(data_to_send, 'google_creddies')
     sheet_creds_set = True
-    print("reached pause point")
-
-
 
 
 # Function to authenticate with Google
-# https://www.geeksforgeeks.org/json-dump-in-python/
-# https://stackoverflow.com/questions/64196315/json-dump-into-specific-folder
+# I didn't really end up needing this link, my goal was to see if there was a way I could grab something from InstalledAppFlow to launch the URL, but I may prefer the click.
 # https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html
+
+# https://developers.google.com/sheets/api/quickstart/python
+# I took what I needed from above and combined it with a batch update. Take what works you know? A lot of the commented stuff in here explains the creds variable and what scopes aims to do.
+# Authenticate with google, also primarily taken from the quickstart python example. I took what worked and left out what didnt. In a standalone script with Virtual Studio Code, this works rather well. However here I'm having issues with it all broken apart and webbrowser? Not sure.
+# Not 100000% certain what is happening under the hood of from authroized user file, creds, installedAppFlow, from_client_secrets_file either. I just know all of this together worked. If it breaks I'd start there. I tried something with installedAppFlow and accessing the url but Im moving on for various reasons now.
+
 def google_authentication():
     global SCOPES, creds
     
-    urL='https://www.google.com'
-    chrome_path="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-    webbrowser.register('chrome', None,webbrowser.BackgroundBrowser(chrome_path))
-    webbrowser.get('chrome').open_new_tab(urL)
+    # urL='https://www.google.com'
+    # chrome_path="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+    # webbrowser.register('chrome', None,webbrowser.BackgroundBrowser(chrome_path))
+    # webbrowser.get('chrome').open_new_tab(urL)
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
@@ -103,7 +124,7 @@ def google_authentication():
 
     # If there are no (valid) credentials available, prompt the user to log in.
     if not creds or not creds.valid:
-        print("Checking credentials validity...")
+        print("\nChecking credentials validity...")
     if creds and creds.expired and creds.refresh_token:
         print("Credentials expired, refreshing...")
         creds.refresh(Request())
@@ -143,6 +164,7 @@ def google_authentication():
 
 
 # --- Websocket Stuff --- #
+# The fun stuff, this was primarily ripped from the python batchupdate example google had. I did some research, INSERT ROWs best option. Otherwise everything here was putting the proper things where they belong.
 def append_my_clip(
       spreadsheet_id, range_name, value_input_option, insertDataOption, _values, creds
   ): 
@@ -152,12 +174,12 @@ def append_my_clip(
       print("Building the Google Sheets service...")
       service = build("sheets", "v4", credentials=creds)
       print("Connecting with sheet")
-      values = [
-          [
-              # Cell values ...
-          ],
-          # Additional rows
-      ]
+    #   values = [
+    #       [
+    #           # Cell values ...
+    #       ],
+    #       # Additional rows
+    #   ]
 
       print("Values being appended:", _values)
       body = {"values": _values}
@@ -189,16 +211,18 @@ def append_my_clip(
 # please, if you make changes to ur code, restart ur websocket LOL
 # I was about to do some complicated things due to my limited understanding and everything.
 # https://websockets.readthedocs.io/en/stable/faq/server.html#how-do-i-close-a-connection
+# https://stackoverflow.com/questions/71618699/is-there-a-way-to-have-optional-arguments-in-a-function-in-python
+
+# So we take use of the global variables. We send everything to append_my_clip and this is primarily used to give visual feedback of the data moving
 async def twitchUploader(websocket):
     global twitch_spreadsheet_id, twitch_range_name, creds
-    print("===================SERVER STARTED================.")
+    print("===================SERVER STARTED================")
     data = await websocket.recv()
     print(f"<<< {data}")
     clip_url, clip_time = data.split(" @ ", 1)
     print("SHOULD BE CLIP URL:", clip_url)
     print("SHOULD BE CLIP TIME:", clip_time)
 
-    # testywesty()
     # Pass: spreadsheet_id, range_name value_input_option and _values)
     append_my_clip(
       twitch_spreadsheet_id,
@@ -206,28 +230,31 @@ async def twitchUploader(websocket):
       "USER_ENTERED",
       "INSERT_ROWS",
       [[clip_url, clip_time]],
-    #   [clip_url, clip_time],
       creds
     )
 
-    greeting = f"Hello I've got your data. Lets get to processing it now!"
+    greeting = f"\n ✅ YOUR DATA SHOULD BE DONE PROCESSING ✅!"
     await websocket.send(greeting)
     print(f">>> {greeting}")
     
+# Run websocket infinitely,
 async def mako_socket():
-    print(" Hope this works ! @@@@@@@@@@@")
+    print(""" \n Please wait a few seconds...""")
     async with websockets.serve(twitchUploader, "localhost", 8765):
         await asyncio.Future()  # run forever
 
+# Start the websocket!
 def run_websocket():
     asyncio.run(mako_socket())
 # --- Websocket Stuff --- #
 
+
+# One last check to start the Websocket.
 def consent_to_websocket():
     running_web_socket = input("""
-        Okay mate, everythings good, lets get this websocket running and then it'll be automated.
+        Okay mate, everythings good, lets get this websocket running and then it'll be automated.\n
         [1] : Start Websocket
-        [2] : Exit
+        [2] : Exit \n
     """)
     # data = {"example": "data"}
     if running_web_socket == '1':
@@ -235,41 +262,66 @@ def consent_to_websocket():
     if running_web_socket == '2':
         quit()
 
-def start_app(ready_to_run = False):
-    # global ready_to_run
 
+# https://docs.python.org/2/library/functions.html#open
+# Function to read a JSON file
+def read_json(filename):
+    with open(filename, 'r') as f:
+        return json.load(f)
+    # read_data = read_json('output.json')
+    #     print("Read JSON data:", read_data)
+
+# Function to write a JSON file
+# w is to write file
+def create_json(data, filename):
+    with open(filename, 'w') as f:
+        json.dump(data, f)
+
+# Start app begins the CLI application and starts the process. A lot of ifs and while, but gets the job done.
+def start_app(ready_to_run = False):
+    global twitch_spreadsheet_id, twitch_range_name
+
+
+    # Holds whether or not the user would like to run the socket.
     run_socket = None
+
+    # First run ? Set to None as it's just holding options 1-3
     first_run = None
+
+    # Holds the values such as spreadsheet id and range name
     start_var_inputs =  None
 
+    # If the WEBSOCKET is not ready to run (by default it is not), skip this. Otherwise this handles taking us to the consent_to_websocket() function
     if ready_to_run != False:
         while run_socket not in ['1','2',3]:
             run_socket = input("""
                 Okay, ready to run? \n
                 [1] : Yes 
-                [2] : No
+                [2] : No \n
                 """)
             if run_socket == '1':
                 consent_to_websocket()
             if run_socket == '2':
                 quit()
             
-
+    # Otherwise, this is the function that will be ran first, we're in a loop for input until the user selects something 1-3.
     while first_run not in ['1','2','3']:
             if sheet_creds_set == False:
                 first_run = input("""
-                Hey qt3.14, first time running Mako.0 ?
+                Hey qt3.14, first time running Mako.0 ? \n
                 [1] : Yes 
-                [2] : No, I have a credentials.json already.
-                [3] : Exit 😎
+                [2] : No, I have a credentials.json and the google_creddies already.
+                [3] : Exit 😎 \n
                 """)
 
+                # If It's a users first time running this application, we'll go ahead and set up their spreadsheet_id and range_name. We'll need to make this create a json_dump or something, then read it. 
+                # Selecting 1 takes you to the function (more inputs yay!)
                 if first_run == '1':
                     while start_var_inputs not in ['1','2']:
-                        start_var_inputs = input("""
-                        That's fine. \n This applications uses some global variables (Remember math X = 2?), this variable is going to be unique to you, and local to you. \n We also set up some API keys. While this can be scary, rest assured that we can place limits and much more!
+                        start_var_inputs = input(""" 
+                        \n This applications uses some global variables (Remember math X = 2?), this variable is going to be unique to you, and local to you. \n We also set up some API keys. While this can be scary, rest assured that we can place limits and much more! \n
                         [1] : I'm ready! 
-                        [2] : Exit 😎
+                        [2] : Exit 😎 \n
                         """)
                         # data = {"example": "data"}
                         if start_var_inputs == '1':
@@ -277,23 +329,29 @@ def start_app(ready_to_run = False):
                         if start_var_inputs == '2':
                             quit()
                     
-                    
+                # If you've set up before, this ideally where i'd call a function that reads the json, returns it, and then sets the variables and proceeds to google authorization
                 if first_run == '2' or sheet_creds_set == True:
                     account_authed = input("""
-                    Sweet, what do you want to do?
-                    [1] : Run ! 🤖 
-                    [2] : Exit 😎
+                    Sweet, what do you want to do? \n
+                    [1] : Run ! 🤖 ( You may still need to re-verify as my App is not verified with oogle )
+                    [2] : Exit 😎 \n
                     """)
                     if account_authed == '1':
+                        data = read_json('google_creddies')
+                        print("LOOK FOR THIS DATA IN ACCOUNT AUTHING TO SET THE TWITCH NAME / SPREAD TO THIS", data)
+                        if data:
+                            twitch_spreadsheet_id = data['twitch_spreadsheet_id']
+                            twitch_range_name = data['twitch_range_name']
+                        else:
+                            print("Please make sure you didn't change the file name.")
+
                         google_authentication()
                     if account_authed == '2':
                         quit()
 
+            # Option 3 quit the application
             if first_run == '3':
                 quit()
-
-
-
 
 
 # https://stackoverflow.com/questions/21082037/when-making-a-very-simple-multiple-choice-story-in-python-can-i-call-a-line-to --- reminded me to do loop
@@ -301,10 +359,10 @@ def start_app(ready_to_run = False):
 # https://www.freecodecamp.org/news/python-do-while-loop-example/
 # Holy cow haha this reminded me of isinstance() 
 # https://stackoverflow.com/questions/2225038/determine-the-type-of-an-object
+
 if __name__ == '__main__':
-    # exit = False
-    # first_run = None
-    # start_var_inputs =  None
+
+    # Just a little artwork for when the script starts.
     print( """
                             |               ___       #   ___      
                 )))         |.===.         /\#/\      #  <_*_>     
@@ -323,4 +381,6 @@ if __name__ == '__main__':
                 (o o)        {}o o{}       /(o o)\     #  (o o)     
             ooO--(_)--Ooo-ooO--(_)--Ooo-ooO--(_)--Ooo--8---(_)--Ooo-
     """)
+    
+    # Run start app and start application
     start_app()
