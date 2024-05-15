@@ -27,7 +27,7 @@ import websockets
 # https://stackoverflow.com/questions/75454425/access-blocked-project-has-not-completed-the-google-verification-process 
 
 chrome_path = None
-
+creds = None
 
 
 # If modifying these scopes, delete the file token.json.
@@ -107,13 +107,12 @@ def read_json(filename):
 # Function to authenticate with Google
 # https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html
 def google_authentication():
-    global SCOPES
+    global SCOPES, creds
     
     urL='https://www.google.com'
     chrome_path="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
     webbrowser.register('chrome', None,webbrowser.BackgroundBrowser(chrome_path))
     webbrowser.get('chrome').open_new_tab(urL)
-    creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
@@ -153,11 +152,14 @@ def google_authentication():
     # pylint: disable=maybe-no-member
     # print("Building the Google Sheets service...")
 
+def testywesty():
+    print('hello')
 
 def append_my_clip(
       spreadsheet_id, range_name, value_input_option, insertDataOption, _values, creds
   ):
-  creds, _ = google.auth.default()
+  
+#   creds, _ = google.auth.default()
   print("We're going to try and append your clip now...")
   try:
       print("Building the Google Sheets service...")
@@ -190,19 +192,51 @@ def append_my_clip(
   except Exception as error:
       print(f"An error occurred: {error}")
       return error
-  
+
+
+# def do_some_work():
+#     pass
+
+# async def handler(websocket):
+#     await do_some_work()
+
 
 # https://wiki.streamer.bot/en/Servers-Clients/WebSocket-Server
 # https://websockets.readthedocs.io/en/stable/
+# https://learn.microsoft.com/en-us/dotnet/csharp/how-to/concatenate-multiple-strings
+# https://docs.streamer.bot/api/csharp/core/websocket#WebsocketSend
+# https://www.w3schools.com/python/ref_string_split.asp
+# https://docs.python.org/2/library/stdtypes.html#str.split
+# please, if you make changes to ur code, restart ur websocket LOL
+# I was about to do some complicated things due to my limited understanding and everything.
+# https://websockets.readthedocs.io/en/stable/faq/server.html#how-do-i-close-a-connection
 async def twitchUploader(websocket):
+    global TWITCH_SPREADSHEET_ID, TWITCH_RANGE_NAME, creds
     print("===================SERVER STARTED================.")
-    name = await websocket.recv()
-    print(f"<<< {name}")
+    data = await websocket.recv()
+    print(f"<<< {data}")
+    clip_url, clip_time = data.split(" @ ", 1)
+    print("SHOULD BE CLIP URL:", clip_url)
+    print("SHOULD BE CLIP TIME:", clip_time)
 
-    greeting = f"Hello {name}!"
+    testywesty()
+    # Pass: spreadsheet_id, range_name value_input_option and _values)
+    append_my_clip(
+      TWITCH_SPREADSHEET_ID,
+      TWITCH_RANGE_NAME,
+      "USER_ENTERED",
+      "INSERT_ROWS",
+      [[clip_url, clip_time]],
+    #   [clip_url, clip_time],
+      creds
+    )
+
+    greeting = f"Hello {data}!"
 
     await websocket.send(greeting)
     print(f">>> {greeting}")
+    
+
 
 
 async def mako_socket():
@@ -295,46 +329,3 @@ if __name__ == '__main__':
             run_websocket()
         if running_web_socket == '2':
             quit()
-
-
-
-        read_data = read_json('output.json')
-        print("Read JSON data:", read_data)
-
-        # creds = google_authenticate()
-        print("Authenticated with Google")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Function to get the path to the credentials file
-# def get_credentials_path(filename):
-#     # Check if the script is running as a bundled executable
-#     if getattr(sys, 'frozen', False):
-#         # If running as a bundle, the PyInstaller bootloader sets sys._MEIPASS
-#         base_path = sys._MEIPASS
-#     else:
-#         # If running in a normal Python environment
-#         base_path = os.path.dirname(os.path.abspath(__file__))
-
-#     return os.path.join(base_path, filename)
-
-
-
-
-# def create_json(data, filename):
-#     with open(filename, 'w') as f:
-#         json.dump(data, f)
-
-
