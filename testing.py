@@ -12,6 +12,9 @@ import sys
 import webbrowser    
 from google.oauth2 import service_account
 import json
+import asyncio
+import websockets
+
 
 #####################
 ######
@@ -21,6 +24,7 @@ import json
 # https://developers.google.com/sheets/api/quickstart/python
 # https://developers.google.com/sheets/api/guides/values#python_3
 # https://stackoverflow.com/questions/48056052/webbrowser-get-could-not-locate-runnable-browser
+# https://stackoverflow.com/questions/75454425/access-blocked-project-has-not-completed-the-google-verification-process 
 
 chrome_path = None
 
@@ -37,6 +41,7 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 TWITCH_SPREADSHEET_ID = None
 # TWITCH_RANGE_NAME = "A2:C16"
 TWITCH_RANGE_NAME = None
+creds_set = False
 #######
 #######
 ##############
@@ -46,7 +51,7 @@ TWITCH_RANGE_NAME = None
 #######
 
 def set_global_vars():
-    global TWITCH_SPREADSHEET_ID, TWITCH_RANGE_NAME, chrome_path
+    global TWITCH_SPREADSHEET_ID, TWITCH_RANGE_NAME, chrome_path, creds_set
     # https://www.w3schools.com/python/ref_func_all.asp
     details_set = {
         'spread_id' : False,
@@ -85,28 +90,25 @@ def set_global_vars():
         
         if set_personal_vars == '5':
             quit()
-
+    creds_set = True
     print("reached pause point")
 
 
-
-def justRan():
-   pass
-# Function to create a JSON file
-# https://www.geeksforgeeks.org/json-dump-in-python/
-# https://stackoverflow.com/questions/64196315/json-dump-into-specific-folder
-def create_json(data, filename):
-    with open(filename, 'w') as f:
-        json.dump(data, f)
 
 # Function to read a JSON file
 def read_json(filename):
     with open(filename, 'r') as f:
         return json.load(f)
 
-# Function to authenticate with Google
+# Function to create a JSON file
+# https://www.geeksforgeeks.org/json-dump-in-python/
+# https://stackoverflow.com/questions/64196315/json-dump-into-specific-folder
 
+# Function to authenticate with Google
+# https://google-auth-oauthlib.readthedocs.io/en/latest/reference/google_auth_oauthlib.flow.html
 def google_authentication():
+    global SCOPES
+    
     urL='https://www.google.com'
     chrome_path="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
     webbrowser.register('chrome', None,webbrowser.BackgroundBrowser(chrome_path))
@@ -155,6 +157,7 @@ def google_authentication():
 def append_my_clip(
       spreadsheet_id, range_name, value_input_option, insertDataOption, _values, creds
   ):
+  creds, _ = google.auth.default()
   print("We're going to try and append your clip now...")
   try:
       print("Building the Google Sheets service...")
@@ -189,6 +192,29 @@ def append_my_clip(
       return error
   
 
+# https://wiki.streamer.bot/en/Servers-Clients/WebSocket-Server
+# https://websockets.readthedocs.io/en/stable/
+async def twitchUploader(websocket):
+    print("===================SERVER STARTED================.")
+    name = await websocket.recv()
+    print(f"<<< {name}")
+
+    greeting = f"Hello {name}!"
+
+    await websocket.send(greeting)
+    print(f">>> {greeting}")
+
+
+async def mako_socket():
+    print(" Hope this works ! @@@@@@@@@@@")
+    async with websockets.serve(twitchUploader, "localhost", 8765):
+        await asyncio.Future()  # run forever
+
+def run_websocket():
+    asyncio.run(mako_socket())
+
+  
+
 # https://stackoverflow.com/questions/21082037/when-making-a-very-simple-multiple-choice-story-in-python-can-i-call-a-line-to --- reminded me to do loop
 # https://www.w3schools.com/python/python_operators.asp
 # https://www.freecodecamp.org/news/python-do-while-loop-example/
@@ -218,15 +244,15 @@ if __name__ == '__main__':
                     (o o)        {}o o{}       /(o o)\     #  (o o)     
                 ooO--(_)--Ooo-ooO--(_)--Ooo-ooO--(_)--Ooo--8---(_)--Ooo-
         """)
-            
-        first_run = input("""
-        Hey qt3.14, first time running me?
-        [1] : Yes 
-        [2] : Mako please stop making me view this window
-        [3] : Exit 😎
-                        """)
-        if first_run:
-            intro = False
+        if creds_set == False:
+            first_run = input("""
+            Hey qt3.14, first time running me?
+            [1] : Yes 
+            [2] : Mako please stop making me view this window
+            [3] : Exit 😎
+                            """)
+            if first_run:
+                intro = False
 
             if first_run == '1':
                 start_var_inputs = input("""
@@ -241,15 +267,17 @@ if __name__ == '__main__':
                     quit()
                 
                 
-            if first_run == '2':
+            if first_run == '2' or creds_set == True:
                 account_authed = input("""
         Sweet, what do you want to do?
         [1] : Run ! 🤖 
         [2] : Exit 😎
                         """)
-                    
+                if account_authed == '1':
+                    google_authentication()
                 if account_authed == '2':
                     quit()
+
             if first_run == '3':
                quit()
 
@@ -257,7 +285,18 @@ if __name__ == '__main__':
 
         # Can use this data to send whatever is needed. Will need to look in Streamer.bot
 
-        print("Created JSON file")
+        running_web_socket = input("""
+            Okay mate, everythings good, lets get this websocket running and then it'll be automated.
+            [1] : Start Websocket
+            [2] : Exit
+        """)
+        # data = {"example": "data"}
+        if running_web_socket == '1':
+            run_websocket()
+        if running_web_socket == '2':
+            quit()
+
+
 
         read_data = read_json('output.json')
         print("Read JSON data:", read_data)
@@ -290,3 +329,12 @@ if __name__ == '__main__':
 #         base_path = os.path.dirname(os.path.abspath(__file__))
 
 #     return os.path.join(base_path, filename)
+
+
+
+
+# def create_json(data, filename):
+#     with open(filename, 'w') as f:
+#         json.dump(data, f)
+
+
