@@ -21,10 +21,10 @@ import json
 # https://developers.google.com/sheets/api/quickstart/python
 # https://developers.google.com/sheets/api/guides/values#python_3
 # https://stackoverflow.com/questions/48056052/webbrowser-get-could-not-locate-runnable-browser
-urL='https://www.google.com'
-chrome_path="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-webbrowser.register('chrome', None,webbrowser.BackgroundBrowser(chrome_path))
-webbrowser.get('chrome').open_new_tab(urL)
+
+chrome_path = None
+
+
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -33,8 +33,10 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 # Current Spread Sheet ID 
 # Testing Twitch Clips
 # 1jy-WrBstbUP_BJ8-5l41mIYBgZr-SGmJeGTkZdZJ-QE
-TWITCH_SPREADSHEET_ID = "1jy-WrBstbUP_BJ8-5l41mIYBgZr-SGmJeGTkZdZJ-QE"
-TWITCH_RANGE_NAME = "A2:C16"
+# TWITCH_SPREADSHEET_ID = "1jy-WrBstbUP_BJ8-5l41mIYBgZr-SGmJeGTkZdZJ-QE"
+TWITCH_SPREADSHEET_ID = None
+# TWITCH_RANGE_NAME = "A2:C16"
+TWITCH_RANGE_NAME = None
 #######
 #######
 ##############
@@ -43,6 +45,48 @@ TWITCH_RANGE_NAME = "A2:C16"
 #######
 #######
 
+def set_global_vars():
+    global TWITCH_SPREADSHEET_ID, TWITCH_RANGE_NAME, chrome_path
+    # https://www.w3schools.com/python/ref_func_all.asp
+    details_set = {
+        'spread_id' : False,
+        'range_name' : False,
+        'chrome_path': False,
+    }
+    # https://stackoverflow.com/questions/35253971/how-to-check-if-all-values-of-a-dictionary-are-0
+    # all(value == 0 for value in your_dict.values())
+    while all(value == True for value in details_set.values()) == False:
+        set_personal_vars = input(f"""
+        Alright, lets set these variables. If at any moment you are not sure, please, please read the documentation again! Remember, this applications goal is to WRITE to your google sheet, so it needs that permission!  
+        [1] : {"I'm ready to set my SPREADSHEET ID." if TWITCH_SPREADSHEET_ID == None else "I need to CHANGE my SPREADSHEET ID variable." } 
+        [2] : {"I'm ready to set my SPREADSHEET RANGE." if TWITCH_RANGE_NAME == None else "I need to CHANGE my SPREADSHEET RANGE variable." } 
+        [3] : {"Some of us may get a chrome error. Lets be safe, we can set that variable too." if chrome_path == None else "I need to change my chrome variable." } 
+        [4] : Return 😎
+        [5] : Exit 😎
+        """)
+
+        if set_personal_vars == '1':
+            TWITCH_SPREADSHEET_ID = input(f"This is your SPREADSHEET_ID: {TWITCH_SPREADSHEET_ID}. Please refer to docs if you're not sure what this is.")
+            details_set['spread_id'] = True
+            print(f"The details_set spread id is now {details_set['spread_id'] }")
+        
+        if set_personal_vars == '2':
+            TWITCH_RANGE_NAME = input(f"This is your RANGE_NAME:{TWITCH_RANGE_NAME}. Please refer to docs if you're not sure what this is.")
+            details_set['range_name'] = True
+            print(f"The details_set range_name is now {details_set['range_name'] }")
+
+        if set_personal_vars == '3': 
+            chrome_path = input(f"This is your CHROME_PATH {chrome_path}. Please refer to docs if you're not sure what this is. It looks something like this \n C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe")
+            details_set['chrome_path'] = True
+            print(f"The details_set chrome_path is now {details_set['chrome_path'] }")
+            
+        if set_personal_vars == '4':
+            pass
+        
+        if set_personal_vars == '5':
+            quit()
+
+    print("reached pause point")
 
 
 
@@ -62,45 +106,40 @@ def read_json(filename):
 
 # Function to authenticate with Google
 
-def append_my_clip(
-      spreadsheet_id, range_name, value_input_option, insertDataOption, _values
-  ):
-  print("Script is starting...")
-
-  """Shows basic usage of the Sheets API.
-  Prints values from a sample spreadsheet.
-  """
-  
-  creds = None
-  # The file token.json stores the user's access and refresh tokens, and is
-  # created automatically when the authorization flow completes for the first
-  # time.
-
-  if os.path.exists("token.json"):
-    print("token.json exists, attempting to load credentials...")
-    creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-    print("Credentials loaded successfully.")
-  else:
-    print("token.json does not exist, proceeding to authenticate...")
-
-  # If there are no (valid) credentials available, let the user log in.
-  if not creds or not creds.valid:
-    print("Checking credentials validity...")
-    if creds and creds.expired and creds.refresh_token:
-      print("Credentials expired, refreshing...")
-      creds.refresh(Request())
-      print("Credentials refreshed.")
+def google_authentication():
+    urL='https://www.google.com'
+    chrome_path="C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+    webbrowser.register('chrome', None,webbrowser.BackgroundBrowser(chrome_path))
+    webbrowser.get('chrome').open_new_tab(urL)
+    creds = None
+    # The file token.json stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists("token.json"):
+        print("token.json exists, attempting to load credentials...")
+        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+        print("Credentials loaded successfully.")
     else:
-      print("No valid credentials, need to authenticate...")
-      flow = InstalledAppFlow.from_client_secrets_file(
-          "credentials.json", SCOPES
-      )
-      creds = flow.run_local_server(port=0)
-      print("Authentication completed, credentials obtained.")
+        print("token.json does not exist, proceeding to authenticate...")
+
+    # If there are no (valid) credentials available, prompt the user to log in.
+    if not creds or not creds.valid:
+        print("Checking credentials validity...")
+    if creds and creds.expired and creds.refresh_token:
+        print("Credentials expired, refreshing...")
+        creds.refresh(Request())
+        print("Credentials refreshed.")
+    else:
+        print("No valid credentials, need to authenticate...")
+        flow = InstalledAppFlow.from_client_secrets_file(
+        "credentials.json", SCOPES
+        )
+        creds = flow.run_local_server(port=0)
+        print("Authentication completed, credentials obtained.")
     # Save the credentials for the next run
     with open("token.json", "w") as token:
-      token.write(creds.to_json())
-      print("Credentials saved for next run.")
+        token.write(creds.to_json())
+        print("Credentials saved for next run.")
 
     """
     Creates the batch_update the user has access to.
@@ -111,6 +150,12 @@ def append_my_clip(
     # creds, _ = google.auth.default()
     # pylint: disable=maybe-no-member
     # print("Building the Google Sheets service...")
+
+
+def append_my_clip(
+      spreadsheet_id, range_name, value_input_option, insertDataOption, _values, creds
+  ):
+  print("We're going to try and append your clip now...")
   try:
       print("Building the Google Sheets service...")
       service = build("sheets", "v4", credentials=creds)
@@ -184,8 +229,17 @@ if __name__ == '__main__':
             intro = False
 
             if first_run == '1':
-                print('Basic CLI incorported?')
+                start_var_inputs = input("""
+                That's fine, but first and foremost, this applications uses some global variables (Remember math X = 2?), this variable is going to be unique to you, and local to you. While API keys can be scary, rest assured that we can place limits and much more!
+                [1] : I'm ready! 
+                [2] : Exit 😎
+                """)
                 # data = {"example": "data"}
+                if start_var_inputs == '1':
+                    set_global_vars()
+                if start_var_inputs == '2':
+                    quit()
+                
                 
             if first_run == '2':
                 account_authed = input("""
