@@ -78,7 +78,15 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
+## Smidge advanced
+### To run the app similar to the image below install Pyinstaller in your IDE
 
+Follow the instructions [here](https://pyinstaller.org/en/stable/) and then run the following command inside of a powershell / terminal of your choice inside of the directory that holds the script.py:
+
+```
+I needed to add "python" at the start
+python -m PyInstaller --onefile  .\stream_socket.py
+```
 ![Pasted image 20240517103624](https://github.com/mako314/ClipsToSheetsPython/assets/119079347/67243401-5e87-4c21-8770-b615ea8be172)
 
 
