@@ -229,19 +229,19 @@ It's okay if you forget them, they're easy reacquire and are replaceable
 
 ### Timestamp In Use
 <center>
-<img src="https://github.com/mako314/ClipsToSheetsPython/assets/119079347/a3d9f529-7279-47cd-8707-e4a1b277a5fd" alt="Timestamp In Use GIF" width="60%"><br>
+<img src="https://github.com/mako314/ClipsToSheetsPython/assets/119079347/a3d9f529-7279-47cd-8707-e4a1b277a5fd" alt="Timestamp In Use GIF" width="100%"><br>
 <strong>Description:</strong> This GIF demonstrates the practical application of timestamps within the system, showcasing how events are logged and tracked with precision.
 </center>
 
 ### Random User Timestamp
 <center>
-<img src="https://github.com/mako314/ClipsToSheetsPython/assets/119079347/b0988669-9ae9-42f3-b641-0edb501693fb" alt="Random User Timestamp GIF" width="60%"><br>
+<img src="https://github.com/mako314/ClipsToSheetsPython/assets/119079347/b0988669-9ae9-42f3-b641-0edb501693fb" alt="Random User Timestamp GIF" width="100%"><br>
 <strong>Description:</strong> This GIF provides a visual walkthrough of a random user's timestamp data, highlighting how it appears and functions within the platform.
 </center>
 
 ### Organize Clips By Time
 <center>
-<img src="https://github.com/mako314/ClipsToSheetsPython/assets/119079347/cbcf93db-6aa0-4312-897e-3321c978810b" alt="Organize Clips By Time GIF" width="60%"><br>
+<img src="https://github.com/mako314/ClipsToSheetsPython/assets/119079347/cbcf93db-6aa0-4312-897e-3321c978810b" alt="Organize Clips By Time GIF" width="100%"><br>
 <strong>Description:</strong> Observe the organizational features of the system in this GIF, showcasing the methodical sorting of clips by their timestamps for enhanced navigation and efficiency.
 </center>
 
