@@ -23,8 +23,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/mako314/ClipsToSheetsPython">
-    <img src="https://github.com/mako314/ClipsToSheetsPython/assets/119079347/c58a8b3c-df07-4379-8980-5fc1fbf1f69a
-" alt="Twitch to Sheets" width="80" height="80">
+    <img src="https://github.com/mako314/ClipsToSheetsPython/assets/119079347/c58a8b3c-df07-4379-8980-5fc1fbf1f69a" alt="Twitch to Sheets" width="80" height="80">
   </a>
 
 <h3 align="center"> Welcome to Clips to Sheets (Python v.0) </h3>
