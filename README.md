@@ -23,7 +23,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/mako314/ClipsToSheetsPython">
-    <img src="https://drive.google.com/file/d/1aHLdv4NIGr9y64lIoRXKg7MVP3_piP5i/view?usp=sharing" alt="Twitch to Sheets" width="80" height="80">
+    <img src="https://github.com/mako314/ClipsToSheetsPython/assets/119079347/c58a8b3c-df07-4379-8980-5fc1fbf1f69a" alt="Twitch to Sheets" width="80" height="80">
   </a>
 
 <h3 align="center"> Welcome to Clips to Sheets (Python v.0) </h3>
@@ -34,7 +34,7 @@
      <br/>
      The application in itself will not have any major updates in the coming days, however I may update the readMe. I've made some proper documentation on how to use the app from a beginners standpoint.
     <br />
-    <a href="https://github.com/mako314/ClipsToSheetsPython"><strong>Explore the docs »</strong></a>
+    <a href="https://drive.google.com/file/d/1aHLdv4NIGr9y64lIoRXKg7MVP3_piP5i/view?usp=sharing"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     ·
