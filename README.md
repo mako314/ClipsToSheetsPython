@@ -301,8 +301,11 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - bispo.swe@gmail.com -->
 Discord: makocodesnow
+<br/>
 Email: Bispo.swe@gmail.com
+<br/>
 Portfolio: [Macolister](https://macolister.com)
+<br/>
 Project Link: [https://github.com/mako314/ClipsToSheetsPython](https://github.com/mako314/ClipsToSheetsPython)
 
 
