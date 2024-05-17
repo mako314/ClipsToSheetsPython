@@ -105,10 +105,6 @@ This is an example of how you may give instructions on setting up your project l
 To get a local copy up and running follow these simple example steps.
 
 
-
-##### ONLY WINDOWS ATM EXE WISE 😢
-
-
 ### <a name="prerequisites"> Prerequisites</a>
 
 This setup was built using Python 3.10.12 on Windows 10 Home. It should yield similar results on compatible systems. If you requested the executable version, it will only work if we're on the same OS.
