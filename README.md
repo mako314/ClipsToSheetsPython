@@ -60,7 +60,9 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#install">Installation</a></li>
+        <li><a href="#streamerBot">Integrating with Streamerbot & Running the App </a></li>
+        
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -107,9 +109,7 @@ To get a local copy up and running follow these simple example steps.
 ##### ONLY WINDOWS ATM EXE WISE 😢
 
 
-### <a name="pre-req"> Prerequisites</a>
-
-### Prerequisites
+### <a name="prerequisites"> Prerequisites</a>
 
 This setup was built using Python 3.10.12 on Windows 10 Home. It should yield similar results on compatible systems. If you requested the executable version, it will only work if we're on the same OS.
 
@@ -162,8 +162,6 @@ This sets up the authentication framework your application will use to interact 
    - Store it in the same folder as your repository or executable.
 
 
-
-
 ### <a name="install"> Installation</a>
 1. **Make sure you've completed the (<a href="#pre-req"> prerequisites</a>)**
 2. **Clone the repo**
@@ -208,10 +206,8 @@ It's okay if you forget them, they're easy reacquire and are replaceable
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
-
-
-**Integrating with Streamerbot**:
+### <a name="streamerBot">Integrating with Streamerbot & Running the App</a>
+****:
 - Easy way:
    -  Click Import > Paste into the import string box > Import > Close
    -  ```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```
