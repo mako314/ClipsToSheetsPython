@@ -34,7 +34,7 @@
      <br/>
      The application in itself will not have any major updates in the coming days, however I may update the readMe. I've made some proper documentation on how to use the app from a beginners standpoint.
     <br />
-    <a href="https://drive.google.com/file/d/1aHLdv4NIGr9y64lIoRXKg7MVP3_piP5i/view?usp=sharing"><strong>Explore the docs »</strong></a>
+    <a href="https://drive.google.com/file/d/1Y3ZFnm0nKGG_iKtCuz6GOMBqepu-yYnA/view?usp=sharing"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     ·
