@@ -23,7 +23,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/mako314/ClipsToSheetsPython">
-    <img src="https://github.com/mako314/ClipsToSheetsPython/assets/119079347/c58a8b3c-df07-4379-8980-5fc1fbf1f69a" alt="Twitch to Sheets" width="80" height="80">
+    <img src="https://drive.google.com/file/d/1aHLdv4NIGr9y64lIoRXKg7MVP3_piP5i/view?usp=sharing" alt="Twitch to Sheets" width="80" height="80">
   </a>
 
 <h3 align="center"> Welcome to Clips to Sheets (Python v.0) </h3>
@@ -316,6 +316,7 @@ Project Link: [https://github.com/mako314/ClipsToSheetsPython](https://github.co
 * [Everyone over at Best-README-Template for the inspiration](https://github.com/othneildrew/Best-README-Template/graphs/contributors)
 * [Lovely folks over at Self-Taught Devs for encouraging me to build in public (particularly episode 5 haha)](https://open.spotify.com/episode/5RSmtS2DOv07b3hWEbqfw4?si=338c35f783834de7)
 * [streamer.bot, for having the perfect bot already made](https://streamer.bot/)
+* [Hannah Recker - How to sort by date in google sheets](https://coefficient.io/how-to-sort-by-date-in-google-sheets)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
