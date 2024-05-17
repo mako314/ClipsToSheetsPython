@@ -122,7 +122,7 @@ You will need a few tools for this specific setup:
    - **Account Setup**: Set up a [Twitch account](https://www.twitch.tv/). This does not need to be the same email as your Google account. It will post to any Google Sheet as long as it is authorized to do so.
 
 3. **Streamer.bot**
-   - **Download**: Get [Streamer.bot](https://streamer.bot/) here. This was the preferred application used by a majority of clients for Google Sheets communication.
+   - **Download**: Get [Streamer.bot](https://streamer.bot/) here. This was the preferred application used by a majority of clients to enable Google Sheets communication.
 
 4. **Google Account**
    - **Account Creation**: Create a [Google account](https://support.google.com/accounts/answer/27441?hl=en).
@@ -136,7 +136,7 @@ You will need a few tools for this specific setup:
      ![Consent Screen Setup](https://github.com/mako314/ClipsToSheetsPython/assets/119079347/df45e5f9-345a-4d6f-bd93-756b74e65b59)
      - Developer contact information is required.
      - Scopes: This can be left empty if preferred.
-     - **Test Users**: Very important to add your email (or the email hosting the Google Sheet) to the test users list for later adjustments.
+     - **Test Users**: Very important to add your email (the email hosting the Google Sheet is what I used, but any you have local access to is fine) to the test users list for later adjustments.
 
 #### Creating Credentials
 
@@ -151,7 +151,6 @@ To create OAuth credentials for your application, follow these steps:
    - ![Pasted image 20240516195817](https://github.com/mako314/ClipsToSheetsPython/assets/119079347/07949c41-964d-4f95-9b83-4cfc5319eec8)
 
    
-
 This sets up the authentication framework your application will use to interact with Google services.
 
 3. **Download JSON**:
