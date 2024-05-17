@@ -306,7 +306,7 @@ Email: Bispo.swe@gmail.com
 <br/>
 Portfolio: [Macolister](https://macolister.com)
 <br/>
-[LinkedIn](https://www.linkedin.com/in/macolister/)
+LinkedIn: [LinkedIn](https://www.linkedin.com/in/macolister/)
 <br/>
 Project Link: [https://github.com/mako314/ClipsToSheetsPython](https://github.com/mako314/ClipsToSheetsPython)
 
